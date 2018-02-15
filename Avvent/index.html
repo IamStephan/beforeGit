@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html style="margin: 0px;padding: 0px;">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+
+	<script src="Dist/jquery-3.2.1.js"></script>
+	<script src="Dist/semantic.min.js"></script>
+	<script src="Dist/three.min.js"></script>
+	<script src="Dist/TweenLite.min.js"></script>
+	<script src="Dist/EasePack.min.js"></script>
+	<script src="Dist/vue.min.js"></script>
+
+	<script src="Javascript/OrbitControls.js"></script>
+	<script src="Javascript/ObjLoader.js"></script>
+	<script src="Javascript/Basic_Script.js"></script>
+	<script src="Javascript/Background_Setup.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="Css/Basic_Style.css" />
+
+	<link rel="stylesheet" type="text/css" href="Dist/semantic.min.css" />
+	<link rel="stylesheet" type="text/css" href="Dist/animate.css" />
+
+	<title>Avvent</title>
+</head>
+<body>
+
+<!--ToDo
+_____________________________________________
+____Create funding pages
+____Complete recruitment page
+____Fix the show-all-updates card
+____Complete the projects' cards
+
+_____________________________________________
+-->
+
+<!--info bar-->
+<div v-if="showBar" id="profileInfo" class="ui card animated bounceInLeft">
+	<div class="content">
+		<div class="header">Avvent</div>
+		<div class="ui red right corner label" v-on:click="Toggle()"><i class="remove circle icon" ></i></div>
+	</div>
+	<div class="content" v-if="!showReading">
+		Latest in development:
+		<i class="right floated refresh icon" style="cursor: pointer;" v-bind:class="{loading:isLoading}" onclick="getUpdates();"></i>
+		<div class="ui relaxed divided list">
+			<div class="item"><a class="header" v-on:click="ReadingBar(1)">{{tag1}}/{{title1}}</a><div class="description">@{{postDate1}}</div></div>
+			<div class="item"><a class="header" v-on:click="ReadingBar(2)">{{tag2}}/{{title2}}</a><div class="description">@{{postDate2}}</div></div>
+			<div class="item"><a class="header" v-on:click="ReadingBar(3)">{{tag3}}/{{title3}}</a><div class="description">@{{postDate3}}</div></div>
+		</div>
+		<div>
+			<a class="ui red basic label" onclick="GoToCenter(dot2.x,dot2.y,dot2.z,2); GoToMiniModal('crd2'); getAllUpdates();">
+				Show All
+			</a>
+		</div>
+	</div>
+	<div class="content animated fadeIn readingBarOver" v-if="showReading">
+		<div><i class="right floated red icon large remove circle" v-on:click="showReading = false"></i></div>
+		<div><a class="header">{{readingTag}}<br/>{{readingTitle}}</a></div>
+		<div>{{readingText}}</div>
+		<div class="meta right floated">@{{readingDate}}</div>
+	</div>
+</div>
+
+<!--navigation bar-->
+<div id="navigatorContainer" class="animated bounceInUp">
+	<div class="ui menu" id="navigator">
+		<a class="item" onclick="GoToCenter(dot0.x,dot0.y,dot0.z,0); GoToMiniModal('crd0');">
+			Notice
+		</a>
+		<a class="ui pointing dropdown item">
+			Info
+			<i class="dropdown icon"></i>
+			<div class="menu">
+				<div class="item" onclick="GoToCenter(dot6.x,dot6.y,dot6.z,6); GoToModal('crd6', 6);">About us</div>
+				<div class="divider"></div>
+				<div class="item">Funding</div>
+				<div class="item" onclick="GoToCenter(dot8.x,dot8.y,dot8.z,8); GoToModal('crd8', 8);">Recruitment</div>
+				<div class="divider"></div>
+				<div class="item" onclick="infoBar.Toggle();" id="btn2">Developments</div>
+			</div>
+		</a>
+		<a class="ui pointing dropdown item" >
+			The Projects
+			<i class="dropdown icon"></i>
+			<div class="menu">
+				<div class="item disabled">pNous</div>
+				<div class="item disabled">T for F</div>
+				<div class="divider" id="dvdr1"></div>
+				<div class="item" id="btn3" onclick="ganttChart.Toggle();">On-Going projects</div>
+			</div>
+		</a>
+		<a class="ui pointing dropdown item">
+			More
+			<i class="dropdown icon"></i>
+			<div class="menu">
+				
+			</div>
+		</a>
+	</div>
+</div>
+
+<!--mobile navigation Button-->
+<div id="mobileNavigatorContainer" class="animated bounceInDown">
+	<button class="ui red button" onclick="MobileNav();">
+		Menu
+	</button>
+</div>
+
+<!--mobile navigation Bar-->
+<div class="ui vertical menu animated bounceInUp" id="mobileNav">
+	<div class="item" onclick="HideMobileNave();">
+		<h4 style="color:#db2828">Close<i class="red remove circle icon" style="float: right;"></i></h4>
+	</div>
+	<div class="item" onclick="HideMobileNave();GoToCenter(dot0.x,dot0.y,dot0.z,0); GoToMiniModal('crd0');">
+		<h4>Notice<i class="chevron circle right icon" style="float: right;"></i></h4>
+	</div>
+	<div class="item">
+		<h4>Info</h4>
+		<div class="item" onclick="HideMobileNave();GoToCenter(dot6.x,dot6.y,dot6.z,6); GoToModal('crd6', 6);">About us</div>
+	</div>
+	<div class="item">
+		<h4>The Projects</h4>
+		<div class="item">pNous</div>
+		<div class="item">T for F</div>
+	</div>
+	<div class="item">
+		<h4>More</h4>
+		<div class="item login__ hide" onclick="infoBar.Toggle();">Toggle Info Bar</div>
+		<div class="item">Funding</div>
+		<div class="item" onclick="HideMobileNave();GoToCenter(dot8.x,dot8.y,dot8.z,8); GoToModal('crd8', 8);">Recruitment</div>
+	</div>
+</div>
+
+<!--Background-->
+<div id="3D_Space" class="pusher"></div>
+
+<!--Notice Card-->
+<div class="ui basic modal" id="crd0">
+	<div class="ui centered card ">
+			<div class="content actions">
+				<div class="header center aligned">
+				<div class="ui red right corner label" onclick="GoToOrigin(dot0.x,dot0.y,dot0.z,0);$('#crd0').modal('hide');"><i class="remove circle icon" ></i></div>
+					Notice
+				</div>
+			</div>
+
+			<div class="content">
+				<div class="description center aligned">The website is currently under construction and therefore lacks major site features. We are in the process of designing the website so it can function without any problems on mobile and desktop devices.</div>
+			</div>
+
+			<div class="extra content center aligned">
+				<div>For more information contact:</div>
+				<div>Stephanburger54@gmail.com</div>
+			</div>
+	</div>
+</div>
+
+<!--All updates Card-->
+<div class="ui basic compact modal" id="crd2">
+	<div class="ui compact segments">
+		<div class="ui segment">
+			<div class="ui header center aligned">
+				All updates
+			</div>
+			<div class="ui red right corner label" onclick="GoToOrigin(dot2.x,dot2.y,dot2.z,2);$('#crd2').modal('hide'); $('#crd2Cards').empty(); offsetPosts = 0;">
+				<i class="remove circle icon" ></i>
+			</div>
+			<!---->
+		</div>
+		<div class="ui segment">
+			<div id="crd2Cards" class="ui divided items">
+				<div class="item" v-for="post in Posts">
+					<div class="content">
+						<div class="header"><a>{{post.Title}}</a></div>
+						<div class="discription" style="color: black">{{post.Text}}</div>
+						<div class="meta">
+							<div class="">{{post.Tag}}</div>
+							<div class="">@{{post.Date}}</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+			
+		<div class="ui segment">
+			<div class="ui fluid buttons">
+				<div class="ui red button" onclick="getAllUpdates();" style="height: inherit;">
+					Load more
+				</div>
+			</div>
+				
+		</div>
+	</div>	
+</div>
+
+<!--Multi-content modal-->
+<div class="ui basic long modal" id="modl" style="color: black;">
+	<div class="ui piled loading segment" style="min-height: 100px;">
+		<div class="ui red right corner label" onclick="CloseModl()"><i class="remove circle icon" ></i></div>
+		<div id="artcles">
+		</div>
+	</div>
+</div>
+
+<!--Gantt chart-->
+<div v-if="showBar" class="ui card animated bounceInRight" id="gntChrt">
+	<div class="ui red right corner label" onclick="ganttChart.Toggle()" style="z-index: 3"><i class="remove circle icon" ></i></div>
+
+	<div class="ui dimmer" id="viewTask" style="padding: 30px;">
+		<div class="content">
+			<div class="ui segment" style="vertical-align: top; text-align: left">
+				<div class="ui header">
+					{{curTitle}} 
+					<a class="ui basic red left pointing label">
+						{{curDuration}} day[s]
+					</a>
+				</div>
+				<div class="meta">{{curEndDate}}</div><br/>
+				<div class="content" style="color: black">{{curDescription}} </div>
+				<div class="ui buttons" style="position:absolute;bottom:10px;left:10px">
+					<div class="ui red button" onclick="$('#viewTask').dimmer('hide');">Close</div>
+				</div>
+				
+			</div>
+
+		</div>
+	</div>
+
+	<div class="ui dimmer" id="allProjects" style="padding: 30px;">
+		<div class="content">
+			<div class="ui segment" style="vertical-align: top; text-align: left;">
+				<div style="max-height: 270px; overflow: auto;padding-bottom: 40px;">
+					<div class="ui items">
+						<div class="item" v-for="project in allProjects">
+							<div class="content">
+								<div class="header">{{project.projectName}}</div>
+								<div class="description">{{project.description}}</div>
+								<div class="extra">
+									<div class="ui right floated red button" style="margin-right: 5px;" v-on:click="ViewProject(project.id)" onclick="$(this).addClass('loading')">
+										View
+									</div>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+				<div style="position: absolute;bottom: 10px;left: 10px; width: calc(100% - 20px); background-color: white; padding-top: 5px;">
+					<div class="ui buttons">
+						<div class="ui red button"  v-on:click="CloseProjectDimmer()">Cancel</div>
+						<div class="or"></div>
+						<div id="btn5" class="ui red button" v-on:click="ViewAllProjects()" onclick="$('#btn5').addClass('loading');">Load More</div>
+					</div>
+						
+				</div>
+				
+			</div>
+		</div>
+	</div>
+
+	<div class="head_container" style="display: flex; align-items: center;">
+		<div id="btn4" class="ui red basic button" style="margin-left: 10px;" v-on:click="ViewAllProjects()" onclick="$('#btn4').addClass('loading');">
+			<i class="ui icon list" style="margin-right: 0px;"></i>
+		</div>
+	</div>
+
+	<div id="porject_container">
+		<div id="noProjectContainer">
+			<div class="ui basic segment">
+				<div class="ui message">
+					<div class="header">Please select a project to view or edit</div>
+					<p>NOTE: This component of the website is still in its experimental stages and you might experience some issues</p>
+					<p class="meta">Do you have a feature request? Send it to stephanburger54@gmail.com.</p>
+				</div>
+			</div>
+		</div>
+		<div id="info_tab" class="ui segment" style="margin-bottom: 0px; margin-top:0px;">
+			<div class="ui header">
+				{{project.projectName}}
+			</div>
+			<div class="meta">Duration: {{projectDuration}} days</div>
+			<div class="meta">
+				Divisions: 
+				<ul style="margin-top: 0px;overflow-y: auto; max-height: 150px; ">
+					<li v-for="participant in project.participants">
+						{{participant.participantsUsername}} 
+					</li>
+				</ul>
+			</div>
+
+			<div style="text-align: center; display: flex; width: 100%; justify-content: space-between;">
+				<div class="ui label" style="cursor: pointer;" onclick="ganttChart.dayLength = ganttChart.dayLength /2; "><i class="ui minus icon" style="margin: 0px"></i></div>
+				<div class="ui basic label">Zoom</div>
+				<div class="ui label" style="cursor: pointer;" onclick="ganttChart.dayLength = ganttChart.dayLength *2;"><i class="ui plus icon" style="margin: 0px"></i></div>
+			</div>
+		</div>
+		<div id="tasks_tab">
+			<div class="ui menu segment" style="padding: 0px;" v-bind:style="{width: (projectDuration * dayLength) + 'px'}">
+				<div class="ui item"  style="padding: 0px; text-align: center;" v-bind:style="{width: dayLength + 'px'}" v-for="n in projectDuration">
+					<div v-if="showMonthToolTip(n)" class="tooltipOnDate ui pointing label">{{GetDateMonth(n)}}</div>
+					
+					<div v-if="showDay()" class="monthDay">{{GetDateDay(n)}}</div>
+				</div>
+			</div>
+			<div id="project_task_whole">
+				{{project.projectName}}		
+			</div>
+			<div v-show="completedProject" id="project_task_complete">
+				The project is still undergoing some planning			
+			</div>
+			<div class="task" v-for="task in project.tasks" v-on:click="OpenTaskDef(task.id, task.title, task.description ,task.endDate,task.duration)" v-bind:style="{left: calcLeft(task.duration,task.endDate), width: calcWidth(task.duration)}" style="cursor: pointer;">
+				{{task.title}}
+			</div>
+		</div>
+	</div>
+</div>
+	
+</div>
+</body>
+</html>

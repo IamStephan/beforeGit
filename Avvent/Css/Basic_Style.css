@@ -1,0 +1,157 @@
+body, html{margin: 0px; padding: 0px; overflow: hidden;}
+
+
+
+
+#navigatorContainer{
+	position: fixed;
+	bottom: 10px;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	z-index: 999;
+	display: none;
+	
+}
+#navigator{
+	margin: auto;
+	z-index: 999;
+}
+#mobileNavigatorContainer{
+	position: fixed;
+	top: 10px;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	z-index: 999;
+	left: 10px;
+	display: none;
+	width: auto;
+}
+#mobileNav{
+	max-height: 45%;
+	position: absolute;
+	bottom: 0px;
+	margin: 10px;
+	padding: 0px;
+	color: black;
+	width: calc(100% - 20px);
+	overflow: auto;
+	display: none;
+	z-index: 2;
+}
+.dropdown.icon{
+	transform: rotateZ(180deg);
+}
+.ui.modal{
+	color: black;
+}
+
+#profileInfo{
+	position: absolute;
+	left: 10px;
+	top: 20%;
+	z-index: 1;
+}
+#chatroomApp{
+	position: absolute;
+	right: 10px;
+	top: 20%;
+	z-index: 1;
+
+}
+.forceHorCenter{
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+}
+.inputBox{
+	border-style: none;
+	width: 100%;
+}
+.readingBarOver{
+	max-height: 250px;
+	overflow:auto;
+}
+.events{
+	margin-bottom: 60px !important
+}
+
+#gntChrt{
+	position: absolute; 
+	top: 20%; 
+	right: 10px; 
+	width: 640px; 
+	height: 360px; 
+	margin: 0px; 
+	overflow-y: auto;
+}
+.head_container{
+	width: 100%;
+	height: 50px;
+}
+#porject_container{
+	width: 100%;
+	height: 100%;
+	display: flex;
+}
+#info_tab{
+	width: 200px;
+}
+#tasks_tab{
+	width: 100%;
+	float: right;
+	overflow: auto;
+	padding-left: 5px;
+}
+#project_task_whole{
+	height: 25px;
+	width: 100%;
+	background-color: #2c3e50;
+	border-radius: 12.5px;
+	margin: 1px;
+	text-align: center;
+	color: white
+}
+#project_task_complete{
+	height: 25px;
+	background-color: #db2828;
+	border-radius: 12.5px;
+	margin: 1px;
+	text-align: center;
+	color: white
+}
+#noProjectContainer{
+	z-index: 2; 
+	position: absolute; 
+	left: 0px;
+	top: 43px; 
+	background-color: white;
+	width: 100%;
+	height: calc(100% - 43px);
+}
+.task{
+	height: 25px;
+	background-color: #db2828;
+	display: block;
+	border-radius: 12.5px;
+	margin: 1px;
+	position: relative;
+	text-align: center;
+	color: white
+}
+.tooltipOnDate{
+	position: absolute;
+	left: 50%;
+	transform: translate(-7px, 40px);
+	margin: 0px !important;
+}
+.tooltipOnDate::before{
+	transform: translate(4px, -50%) rotate(45deg) !important;
+	left: 0px !important;
+	z-index: -1 !important;
+}
+.monthDay{
+	position: absolute;
+	width: 100%;
+}

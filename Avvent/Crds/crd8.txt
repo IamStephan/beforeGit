@@ -1,0 +1,6 @@
+<h2 class="ui centered aligned header">Recruitment</h2>
+<p>Here at Avvent we wish to build a community that not only contributes verbally but we want a community that can contribute in a way a employee might. That is why we are introducing our own innovative recruitment system. Since our main business is based on psychology it allows us to spread out into many  other fields. To keep us from losing our main focus, psychology, we are asking our community to help us span out into all different fields like technology.</p>
+
+<a class="ui red ribbon label">How it works</a>
+<p>The system is simple. We start a new project that</p>
+
